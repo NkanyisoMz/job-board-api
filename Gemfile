@@ -11,6 +11,22 @@ gem "pg", "~> 1.1"
 # Use the Puma web server [https://github.com/puma/puma]
 gem "puma", ">= 5.0"
 
+# Authentication
+gem "bcrypt"
+gem "jwt"
+
+# Serialization
+gem "active_model_serializers"
+
+# Pagination
+gem "pagy", "~> 9.3"
+
+# API Doc
+gem "rswag"
+
+# Rate limiting
+gem "rack-attack"
+
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 # gem "jbuilder"
 
@@ -40,6 +56,9 @@ group :development, :test do
   gem "debug", platforms: %i[ mri windows ]
 
   gem "dotenv-rails"
+  gem "rspec-rails"
+  gem "factory_bot_rails"
+  gem "faker"
 end
 
 group :development do
