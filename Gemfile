@@ -12,7 +12,7 @@ gem "pg", "~> 1.1"
 gem "puma", ">= 5.0"
 
 # Authentication
-gem "bcrypt"
+gem "bcrypt", "~> 3.1.7"
 gem "jwt"
 
 # Serialization
@@ -26,6 +26,7 @@ gem "rswag"
 
 # Rate limiting
 gem "rack-attack"
+
 
 # Build JSON APIs with ease [https://github.com/rails/jbuilder]
 # gem "jbuilder"
