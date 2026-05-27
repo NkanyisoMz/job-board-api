@@ -4,6 +4,8 @@ Rails.application.routes.draw do
       root "home#index"
 
       get "/", to: "home#index"
+      post "/register", to: "auth#register"
+      post "/login", to: "auth#login"
     end
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
