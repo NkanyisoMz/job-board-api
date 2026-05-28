@@ -6,6 +6,8 @@ Rails.application.routes.draw do
       get "/", to: "home#index"
       post "/register", to: "auth#register"
       post "/login", to: "auth#login"
+
+      resources :jobs
     end
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
