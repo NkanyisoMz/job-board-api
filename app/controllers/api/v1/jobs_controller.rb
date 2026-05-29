@@ -1,4 +1,4 @@
-class Api::V1::JobsController < ApplicationController
+class Api::V1::JobsController < Api::V1::BaseController
      before_action :authorize_request, except: [:index, :show]
   before_action :set_job, only: [:show, :update, :destroy]
 
@@ -13,6 +13,7 @@ class Api::V1::JobsController < ApplicationController
   end
 
   def create
+
     job = current_user.jobs.build(job_params)
 
     if job.save
