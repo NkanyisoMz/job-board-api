@@ -1,9 +1,26 @@
 class Api::V1::JobsController < Api::V1::BaseController
-     before_action :authorize_request, except: [:index, :show]
+  before_action :authorize_request, except: [:index, :show]
   before_action :set_job, only: [:show, :update, :destroy]
 
   def index
     jobs = Job.all
+
+    jobs = jobs.where(
+      "title ILIKE ? OR company_name ILIKE ? OR description ILIKE ?",
+      "%#{params[:search]}%",
+      "%#{params[:search]}%",
+      "%#{params[:search]}%"
+    ) if params[:search].present?
+
+    jobs = jobs.where(location: params[:location]) if params[:location].present?
+
+    jobs = jobs.where(
+      employment_type: params[:employment_type]
+    ) if params[:employment_type].present?
+
+    jobs = jobs.where(
+      experience_level: params[:experience_level]
+    ) if params[:experience_level].present?
 
     render json: jobs
   end
