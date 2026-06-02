@@ -22,7 +22,17 @@ class Api::V1::JobsController < Api::V1::BaseController
       experience_level: params[:experience_level]
     ) if params[:experience_level].present?
 
-    render json: jobs
+    pagy, jobs = pagy(jobs, limit: 5)
+
+    render json: {
+      jobs: ActiveModelSerializers::SerializableResource.new(jobs),
+      pagination: {
+        current_page: pagy.page,
+        total_pages: pagy.pages,
+        total_count: pagy.count
+      }
+    }
+
   end
 
   def show
