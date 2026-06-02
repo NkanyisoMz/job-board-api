@@ -1,0 +1,59 @@
+require 'swagger_helper'
+
+RSpec.describe 'Authentication API', type: :request do
+  path '/api/v1/register' do
+    post('Register a user') do
+      tags 'Authentication'
+      consumes 'application/json'
+      produces 'application/json'
+
+      parameter name: :user, in: :body, schema: {
+        type: :object,
+        properties: {
+          email: { type: :string },
+          password: { type: :string }
+        },
+        required: %w[email password]
+      }
+
+      response(201, 'user created') do
+        let(:user) do
+          {
+            email: 'swagger@test.com',
+            password: 'password123'
+          }
+        end
+
+        run_test!
+      end
+    end
+  end
+
+  path '/api/v1/login' do
+    post('Login a user') do
+      tags 'Authentication'
+      consumes 'application/json'
+      produces 'application/json'
+
+      parameter name: :credentials, in: :body, schema: {
+        type: :object,
+        properties: {
+          email: { type: :string },
+          password: { type: :string }
+        },
+        required: %w[email password]
+      }
+
+      response(200, 'login successful') do
+        let(:credentials) do
+          {
+            email: 'another@test.com',
+            password: 'password123'
+          }
+        end
+
+        run_test!
+      end
+    end
+  end
+end

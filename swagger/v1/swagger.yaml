@@ -1,0 +1,62 @@
+---
+openapi: 3.0.1
+info:
+  title: Job Board API
+  version: v1
+  description: A RESTful Job Board API built with Ruby on Rails. Supports JWT authentication,
+    job management, search, filtering, and pagination.
+servers:
+- url: http://localhost:3000
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+security:
+- bearerAuth: []
+paths:
+  "/api/v1/register":
+    post:
+      summary: Register a user
+      tags:
+      - Authentication
+      parameters: []
+      responses:
+        '201':
+          description: user created
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+              required:
+              - email
+              - password
+  "/api/v1/login":
+    post:
+      summary: Login a user
+      tags:
+      - Authentication
+      parameters: []
+      responses:
+        '200':
+          description: login successful
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+              required:
+              - email
+              - password
