@@ -60,3 +60,142 @@ paths:
               required:
               - email
               - password
+  "/api/v1/jobs":
+    get:
+      summary: List jobs
+      tags:
+      - Jobs
+      parameters:
+      - name: search
+        in: query
+        description: Search title, company name, or description
+        schema:
+          type: string
+      - name: location
+        in: query
+        description: Filter by location
+        schema:
+          type: string
+      - name: employment_type
+        in: query
+        description: Filter by employment type
+        schema:
+          type: string
+      - name: experience_level
+        in: query
+        description: Filter by experience level
+        schema:
+          type: string
+      - name: page
+        in: query
+        description: Page number
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: jobs found
+    post:
+      summary: Create a job
+      tags:
+      - Jobs
+      security:
+      - bearerAuth: []
+      parameters: []
+      responses:
+        '201':
+          description: job created
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                company_name:
+                  type: string
+                location:
+                  type: string
+                description:
+                  type: string
+                employment_type:
+                  type: string
+                experience_level:
+                  type: string
+                remote:
+                  type: boolean
+                salary_range:
+                  type: string
+              required:
+              - title
+              - company_name
+              - location
+  "/api/v1/jobs/{id}":
+    get:
+      summary: Show a job
+      tags:
+      - Jobs
+      parameters:
+      - name: id
+        in: path
+        description: Job ID
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: job found
+    patch:
+      summary: Update a job
+      tags:
+      - Jobs
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        description: Job ID
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: job updated
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                company_name:
+                  type: string
+                location:
+                  type: string
+                description:
+                  type: string
+                employment_type:
+                  type: string
+                experience_level:
+                  type: string
+                remote:
+                  type: boolean
+                salary_range:
+                  type: string
+    delete:
+      summary: Delete a job
+      tags:
+      - Jobs
+      security:
+      - bearerAuth: []
+      parameters:
+      - name: id
+        in: path
+        description: Job ID
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: job deleted
