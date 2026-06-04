@@ -17,6 +17,18 @@ RSpec.describe 'Authentication API', type: :request do
       }
 
       response(201, 'user created') do
+        schema type: :object,
+          properties: {
+            user: {
+              type: :object,
+              properties: {
+                id: { type: :integer },
+                email: { type: :string }
+              }
+            },
+          token: { type: :string }
+         }
+
         let(:user) do
           {
             email: 'swagger@test.com',
@@ -25,7 +37,7 @@ RSpec.describe 'Authentication API', type: :request do
         end
 
         run_test!
-      end
+     end
     end
   end
 
@@ -45,15 +57,27 @@ RSpec.describe 'Authentication API', type: :request do
       }
 
       response(200, 'login successful') do
-        let(:credentials) do
-          {
-            email: 'another@test.com',
-            password: 'password123'
-          }
-        end
+        schema type: :object,
+              properties: {
+              user: {
+              type: :object,
+              properties: {
+              id: { type: :integer },
+              email: { type: :string }
+             }
+           },
+           token: { type: :string }
+         }
 
-        run_test!
-      end
+          let(:credentials) do
+            {
+              email: 'another@test.com',
+              password: 'password123'
+            }
+          end
+
+         run_test!
+        end
     end
   end
 end

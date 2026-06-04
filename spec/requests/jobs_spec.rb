@@ -32,6 +32,30 @@ RSpec.describe 'Jobs API', type: :request do
                 description: 'Page number'
 
       response(200, 'jobs found') do
+        schema type: :object,
+          properties: {
+            jobs: {
+              type: :array,
+              items: {
+              type: :object,
+              properties: {
+                id: { type: :integer },
+                title: { type: :string },
+                company_name: { type: :string },
+                location: { type: :string }
+               }
+             }
+           },
+           pagination: {
+              type: :object,
+              properties: {
+                current_page: { type: :integer },
+                total_pages: { type: :integer },
+                total_count: { type: :integer }
+             }
+           }
+         }
+
         run_test!
       end
     end
@@ -48,17 +72,24 @@ RSpec.describe 'Jobs API', type: :request do
                 description: 'Job ID'
 
       response(200, 'job found') do
-        let(:id) { Job.create!(
-          title: 'Swagger Job',
+        schema type: :object,
+          properties: {
+            id: { type: :integer },
+            title: { type: :string },
+            company_name: { type: :string },
+            location: { type: :string },
+            description: { type: :string }
+          }
+
+        example 'application/json', :success, {
+          id: 1,
+          title: 'Junior Rails Developer',
           company_name: 'Tech Corp',
           location: 'Remote',
-          user: User.create!(
-            email: 'swagger_show@test.com',
-            password: 'password123'
-          )
-        ).id }
+          description: 'Rails API development'
+       }
 
-        run_test!
+       run_test!
       end
     end
   end
@@ -93,23 +124,32 @@ RSpec.describe 'Jobs API', type: :request do
               }
 
       response(201, 'job created') do
-      response(401, 'unauthorized') do
-       run_test!
-      end
+        schema type: :object,
+          properties: {
+            id: { type: :integer },
+            title: { type: :string },
+            company_name: { type: :string },
+            location: { type: :string }
+          }
 
-      response(422, 'validation failed') do
-        run_test!
-      end
         let(:Authorization) { 'Bearer token' }
 
         let(:job) do
           {
             title: 'Junior Rails Developer',
             company_name: 'Tech Corp',
-            location: 'Remote'
-          }
+           location: 'Remote'
+         }
         end
 
+        run_test!
+      end
+
+      response(401, 'unauthorized') do
+        run_test!
+      end
+
+      response(422, 'validation failed') do
         run_test!
       end
     end
@@ -145,7 +185,45 @@ RSpec.describe 'Jobs API', type: :request do
               }
 
     response(200, 'job updated') do
-    response(401, 'unauthorized') do
+      schema type: :object,
+        properties: {
+          id: { type: :integer },
+          title: { type: :string },
+          company_name: { type: :string },
+          location: { type: :string },
+          description: { type: :string }
+         }
+
+      let(:user) do
+        User.create!(
+          email: 'update@test.com',
+          password: 'password123'
+       )
+      end
+
+      let(:existing_job) do
+        Job.create!(
+          title: 'Old Title',
+          company_name: 'Tech Corp',
+          location: 'Remote',
+         user: user
+       )
+      end
+
+      let(:id) { existing_job.id }
+
+      let(:Authorization) { 'Bearer token' }
+
+      let(:job) do
+      {
+        title: 'Updated Rails Developer'
+      }
+      end
+
+      run_test!
+    end
+
+     response(401, 'unauthorized') do
       run_test!
     end
 
@@ -156,36 +234,8 @@ RSpec.describe 'Jobs API', type: :request do
     response(422, 'validation failed') do
      run_test!
     end
-      let(:user) do
-        User.create!(
-          email: 'update@test.com',
-          password: 'password123'
-        )
-      end
-
-      let(:existing_job) do
-        Job.create!(
-          title: 'Old Title',
-          company_name: 'Tech Corp',
-          location: 'Remote',
-          user: user
-        )
-      end
-
-      let(:id) { existing_job.id }
-
-      let(:Authorization) { 'Bearer token' }
-
-      let(:job) do
-        {
-          title: 'Updated Rails Developer'
-        }
-        end
-
-        run_test!
-      end
-    end
   end
+end
 
   path '/api/v1/jobs/{id}' do
   delete('Delete a job') do

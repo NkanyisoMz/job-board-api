@@ -25,6 +25,20 @@ paths:
       responses:
         '201':
           description: user created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      email:
+                        type: string
+                  token:
+                    type: string
       requestBody:
         content:
           application/json:
@@ -47,6 +61,20 @@ paths:
       responses:
         '200':
           description: login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      email:
+                        type: string
+                  token:
+                    type: string
       requestBody:
         content:
           application/json:
@@ -94,6 +122,33 @@ paths:
       responses:
         '200':
           description: jobs found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  jobs:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        title:
+                          type: string
+                        company_name:
+                          type: string
+                        location:
+                          type: string
+                  pagination:
+                    type: object
+                    properties:
+                      current_page:
+                        type: integer
+                      total_pages:
+                        type: integer
+                      total_count:
+                        type: integer
     post:
       summary: Create a job
       tags:
@@ -102,12 +157,25 @@ paths:
       - bearerAuth: []
       parameters: []
       responses:
+        '201':
+          description: job created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  title:
+                    type: string
+                  company_name:
+                    type: string
+                  location:
+                    type: string
         '401':
           description: unauthorized
         '422':
           description: validation failed
-        '201':
-          description: job created
       requestBody:
         content:
           application/json:
@@ -149,6 +217,29 @@ paths:
       responses:
         '200':
           description: job found
+          content:
+            application/json:
+              examples:
+                success:
+                  value:
+                    id: 1
+                    title: Junior Rails Developer
+                    company_name: Tech Corp
+                    location: Remote
+                    description: Rails API development
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  title:
+                    type: string
+                  company_name:
+                    type: string
+                  location:
+                    type: string
+                  description:
+                    type: string
     patch:
       summary: Update a job
       tags:
@@ -163,14 +254,29 @@ paths:
         schema:
           type: integer
       responses:
+        '200':
+          description: job updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  title:
+                    type: string
+                  company_name:
+                    type: string
+                  location:
+                    type: string
+                  description:
+                    type: string
         '401':
           description: unauthorized
         '403':
           description: forbidden
         '422':
           description: validation failed
-        '200':
-          description: job updated
       requestBody:
         content:
           application/json:
