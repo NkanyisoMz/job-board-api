@@ -93,6 +93,13 @@ RSpec.describe 'Jobs API', type: :request do
               }
 
       response(201, 'job created') do
+      response(401, 'unauthorized') do
+       run_test!
+      end
+
+      response(422, 'validation failed') do
+        run_test!
+      end
         let(:Authorization) { 'Bearer token' }
 
         let(:job) do
@@ -138,6 +145,17 @@ RSpec.describe 'Jobs API', type: :request do
               }
 
     response(200, 'job updated') do
+    response(401, 'unauthorized') do
+      run_test!
+    end
+
+    response(403, 'forbidden') do
+      run_test!
+    end
+
+    response(422, 'validation failed') do
+     run_test!
+    end
       let(:user) do
         User.create!(
           email: 'update@test.com',
@@ -182,6 +200,14 @@ RSpec.describe 'Jobs API', type: :request do
               description: 'Job ID'
 
     response(200, 'job deleted') do
+
+    response(401, 'unauthorized') do
+      run_test!
+    end
+
+    response(403, 'forbidden') do
+      run_test!
+    end
       let(:user) do
         User.create!(
           email: 'delete@test.com',

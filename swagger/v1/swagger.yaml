@@ -102,6 +102,10 @@ paths:
       - bearerAuth: []
       parameters: []
       responses:
+        '401':
+          description: unauthorized
+        '422':
+          description: validation failed
         '201':
           description: job created
       requestBody:
@@ -159,6 +163,12 @@ paths:
         schema:
           type: integer
       responses:
+        '401':
+          description: unauthorized
+        '403':
+          description: forbidden
+        '422':
+          description: validation failed
         '200':
           description: job updated
       requestBody:
@@ -197,5 +207,9 @@ paths:
         schema:
           type: integer
       responses:
+        '401':
+          description: unauthorized
+        '403':
+          description: forbidden
         '200':
           description: job deleted
