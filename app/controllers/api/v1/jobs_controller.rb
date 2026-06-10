@@ -3,6 +3,7 @@ class Api::V1::JobsController < Api::V1::BaseController
   before_action :set_job, only: [:show, :update, :destroy]
 
   def index
+
     jobs = Job.all
 
     jobs = jobs.where(
@@ -89,7 +90,7 @@ class Api::V1::JobsController < Api::V1::BaseController
   end
 
   def job_params
-    params.permit(
+    params.require(:job).permit(
       :title,
       :company_name,
       :location,
