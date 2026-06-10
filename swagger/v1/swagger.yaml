@@ -13,8 +13,6 @@ components:
       type: http
       scheme: bearer
       bearerFormat: JWT
-security:
-- bearerAuth: []
 paths:
   "/api/v1/register":
     post:
@@ -313,9 +311,9 @@ paths:
         schema:
           type: integer
       responses:
+        '200':
+          description: job deleted
         '401':
           description: unauthorized
         '403':
           description: forbidden
-        '200':
-          description: job deleted
