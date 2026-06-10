@@ -58,7 +58,9 @@ RSpec.describe 'Api::V1::Jobs', type: :request do
     it 'creates a job for an authenticated user' do
       expect {
         post '/api/v1/jobs',
-            params: valid_attributes,
+            params: {
+              job: valid_attributes
+            },
             headers: {
               'Authorization' => "Bearer #{token}"
             }
@@ -72,7 +74,9 @@ RSpec.describe 'Api::V1::Jobs', type: :request do
     it 'prevents another user from updating the job' do
       patch "/api/v1/jobs/#{job.id}",
           params: {
+            job: {
             title: 'Hacked Title'
+          }
           },
           headers: {
             'Authorization' => "Bearer #{other_token}"
@@ -84,7 +88,9 @@ RSpec.describe 'Api::V1::Jobs', type: :request do
     it 'allows the owner to update the job' do
       patch "/api/v1/jobs/#{job.id}",
         params: {
+          job: {
           title: 'Updated Title'
+        }
         },
         headers: {
           'Authorization' => "Bearer #{token}"

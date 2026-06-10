@@ -46,15 +46,21 @@ RSpec.describe 'Jobs API', type: :request do
                }
              }
            },
-           pagination: {
+          pagination: {
               type: :object,
               properties: {
                 current_page: { type: :integer },
                 total_pages: { type: :integer },
                 total_count: { type: :integer }
-             }
-           }
-         }
+              }
+          }
+        }
+
+        let(:search) { nil }
+        let(:location) { nil }
+        let(:employment_type) { nil }
+        let(:experience_level) { nil }
+        let(:page) { 1 }
 
         run_test!
       end
@@ -88,6 +94,24 @@ RSpec.describe 'Jobs API', type: :request do
           location: 'Remote',
           description: 'Rails API development'
        }
+       let(:user) do
+  User.create!(
+    email: 'show@test.com',
+    password: 'password123'
+  )
+end
+
+let(:existing_job) do
+  Job.create!(
+    title: 'Rails Developer',
+    company_name: 'Tech Corp',
+    location: 'Remote',
+    description: 'Rails API development',
+    user: user
+  )
+end
+
+let(:id) { existing_job.id }
 
        run_test!
       end
@@ -95,7 +119,7 @@ RSpec.describe 'Jobs API', type: :request do
   end
 
   path '/api/v1/jobs' do
-  post('Create a job') do
+    post('Create a job') do
     tags 'Jobs'
     consumes 'application/json'
     produces 'application/json'
@@ -132,7 +156,22 @@ RSpec.describe 'Jobs API', type: :request do
             location: { type: :string }
           }
 
-        let(:Authorization) { 'Bearer token' }
+
+        let(:user) do
+  User.create!(
+    email: 'job@test.com',
+    password: 'password123'
+  )
+end
+
+let(:token) do
+  JWT.encode(
+  { user_id: user.id },
+  Rails.application.secret_key_base
+)
+end
+
+let(:Authorization) { "Bearer #{token}" }
 
         let(:job) do
           {
@@ -145,18 +184,49 @@ RSpec.describe 'Jobs API', type: :request do
         run_test!
       end
 
-      response(401, 'unauthorized') do
-        run_test!
-      end
+    response(401, 'unauthorized') do
+      let(:Authorization) { nil }
 
-      response(422, 'validation failed') do
-        run_test!
-      end
-    end
+  let(:job) do
+    {
+      title: 'Test Job',
+      company_name: 'Tech Corp',
+      location: 'Remote'
+    }
+  end
+  run_test!
+end
+
+  response(422, 'validation failed') do
+    let(:user) do
+      User.create!(
+      email: 'job@test.com',
+      password: 'password123'
+    )
   end
 
+  let(:token) do
+    JWT.encode(
+      { user_id: user.id },
+      Rails.application.secret_key_base
+    )
+  end
+
+  let(:Authorization) { "Bearer #{token}" }
+
+  let(:job) do
+    {
+      title: ''
+    }
+  end
+
+  run_test!
+end
+end
+end
+
   path '/api/v1/jobs/{id}' do
-  patch('Update a job') do
+    patch('Update a job') do
     tags 'Jobs'
     consumes 'application/json'
     produces 'application/json'
@@ -206,13 +276,21 @@ RSpec.describe 'Jobs API', type: :request do
           title: 'Old Title',
           company_name: 'Tech Corp',
           location: 'Remote',
+          description: 'Old description',
          user: user
        )
       end
 
       let(:id) { existing_job.id }
 
-      let(:Authorization) { 'Bearer token' }
+      let(:token) do
+  JWT.encode(
+  { user_id: user.id },
+  Rails.application.secret_key_base
+)
+      end
+
+let(:Authorization) { "Bearer #{token}" }
 
       let(:job) do
       {
@@ -223,21 +301,114 @@ RSpec.describe 'Jobs API', type: :request do
       run_test!
     end
 
-     response(401, 'unauthorized') do
-      run_test!
-    end
-
-    response(403, 'forbidden') do
-      run_test!
-    end
-
-    response(422, 'validation failed') do
-     run_test!
-    end
+    response(401, 'unauthorized') do
+  let(:user) do
+    User.create!(
+      email: 'update@test.com',
+      password: 'password123'
+    )
   end
+
+  let(:existing_job) do
+    Job.create!(
+      title: 'Old Title',
+      company_name: 'Tech Corp',
+      location: 'Remote',
+      user: user
+    )
+  end
+
+  let(:id) { existing_job.id }
+  let(:Authorization) { nil }
+
+  let(:job) do
+    { title: 'Updated' }
+  end
+
+  run_test!
 end
 
-  path '/api/v1/jobs/{id}' do
+  response(403, 'forbidden') do
+  let(:user) do
+    User.create!(
+      email: 'owner@test.com',
+      password: 'password123'
+    )
+  end
+
+  let(:existing_job) do
+    Job.create!(
+      title: 'Old Title',
+      company_name: 'Tech Corp',
+      location: 'Remote',
+      user: user
+    )
+  end
+
+  let(:other_user) do
+    User.create!(
+      email: 'other@test.com',
+      password: 'password123'
+    )
+  end
+
+  let(:other_token) do
+    JWT.encode(
+      { user_id: other_user.id },
+      Rails.application.secret_key_base
+    )
+  end
+
+  let(:id) { existing_job.id }   # <-- THIS IS MISSING
+
+  let(:Authorization) { "Bearer #{other_token}" }
+
+  let(:job) do
+    { title: 'Updated' }
+  end
+
+  run_test!
+end
+  response(422, 'validation failed') do
+  let(:user) do
+  User.create!(
+    email: 'validation@test.com',
+    password: 'password123'
+  )
+end
+
+let(:existing_job) do
+  Job.create!(
+    title: 'Old Title',
+    company_name: 'Tech Corp',
+    location: 'Remote',
+    user: user
+  )
+end
+
+let(:id) { existing_job.id }
+
+let(:token) do
+  JWT.encode(
+    { user_id: user.id },
+    Rails.application.secret_key_base
+  )
+end
+
+let(:Authorization) { "Bearer #{token}" }
+
+let(:job) do
+  {
+    title: ''
+  }
+end
+run_test!
+end
+end
+end
+
+
+path '/api/v1/jobs/{id}' do
   delete('Delete a job') do
     tags 'Jobs'
     produces 'application/json'
@@ -250,14 +421,6 @@ end
               description: 'Job ID'
 
     response(200, 'job deleted') do
-
-    response(401, 'unauthorized') do
-      run_test!
-    end
-
-    response(403, 'forbidden') do
-      run_test!
-    end
       let(:user) do
         User.create!(
           email: 'delete@test.com',
@@ -276,10 +439,79 @@ end
 
       let(:id) { existing_job.id }
 
-      let(:Authorization) { 'Bearer token' }
-
-        run_test!
+      let(:token) do
+        JWT.encode(
+          { user_id: user.id },
+          Rails.application.secret_key_base
+        )
       end
+
+      let(:Authorization) { "Bearer #{token}" }
+
+      run_test!
+    end
+
+    response(401, 'unauthorized') do
+      let(:user) do
+        User.create!(
+          email: 'delete@test.com',
+          password: 'password123'
+        )
+      end
+
+      let(:existing_job) do
+        Job.create!(
+          title: 'Delete Me',
+          company_name: 'Tech Corp',
+          location: 'Remote',
+          user: user
+        )
+      end
+
+      let(:id) { existing_job.id }
+
+      let(:Authorization) { nil }
+
+      run_test!
+    end
+
+    response(403, 'forbidden') do
+      let(:user) do
+        User.create!(
+          email: 'owner@test.com',
+          password: 'password123'
+        )
+      end
+
+      let(:existing_job) do
+        Job.create!(
+          title: 'Delete Me',
+          company_name: 'Tech Corp',
+          location: 'Remote',
+          user: user
+        )
+      end
+
+      let(:other_user) do
+        User.create!(
+          email: 'other@test.com',
+          password: 'password123'
+        )
+      end
+
+      let(:other_token) do
+        JWT.encode(
+          { user_id: other_user.id },
+          Rails.application.secret_key_base
+        )
+      end
+
+      let(:id) { existing_job.id }
+
+      let(:Authorization) { "Bearer #{other_token}" }
+
+      run_test!
     end
   end
+end
 end
