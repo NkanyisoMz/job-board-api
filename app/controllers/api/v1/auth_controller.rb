@@ -18,9 +18,11 @@ class Api::V1::AuthController < Api::V1::BaseController
   end
 
   def login
-    user = User.find_by(email: params[:email])
+    user = User.find_by(
+      email: login_params[:email]
+    )
 
-    if user&.authenticate(params[:password])
+    if user&.authenticate(login_params[:password])
       token = encode_token(user_id: user.id)
 
       render json: {
@@ -29,7 +31,7 @@ class Api::V1::AuthController < Api::V1::BaseController
       }, status: :ok
     else
       render json: {
-        error: "Invalid email or password"
+        error: 'Invalid email or password'
       }, status: :unauthorized
     end
   end
@@ -37,6 +39,15 @@ class Api::V1::AuthController < Api::V1::BaseController
   private
 
   def user_params
-    params.permit(:email, :password)
+    params.require(:user).permit(
+      :email,
+      :password)
   end
-end
+
+  def login_params
+    params.require(:credentials).permit(
+    :email,
+      :password
+      )
+    end
+  end

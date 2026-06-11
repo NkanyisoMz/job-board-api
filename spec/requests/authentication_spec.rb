@@ -4,8 +4,10 @@ RSpec.describe 'Authentication', type: :request do
   describe 'POST /api/v1/register' do
     let(:valid_params) do
       {
-        email: 'spec@test.com',
-        password: 'password123'
+        user: {
+          email: 'spec@test.com',
+          password: 'password123'
+        }
       }
     end
 
@@ -20,8 +22,10 @@ RSpec.describe 'Authentication', type: :request do
     it 'does not create user with invalid data' do
       expect {
         post '/api/v1/register', params: {
-          email: '',
-          password: ''
+          user: {
+            email: '',
+            password: ''
+          }
         }
       }.not_to change(User, :count)
 
@@ -39,8 +43,10 @@ RSpec.describe 'Authentication', type: :request do
 
     it 'logs in with valid credentials' do
       post '/api/v1/login', params: {
-        email: user.email,
-        password: 'password123'
+        credentials: {
+          email: user.email,
+          password: 'password123'
+        }
       }
 
       expect(response).to have_http_status(:ok)
@@ -52,8 +58,10 @@ RSpec.describe 'Authentication', type: :request do
 
     it 'rejects invalid credentials' do
       post '/api/v1/login', params: {
-        email: user.email,
-        password: 'wrongpassword'
+        credentials: {
+          email: user.email,
+          password: 'wrongpassword'
+        }
       }
 
       expect(response).to have_http_status(:unauthorized)
