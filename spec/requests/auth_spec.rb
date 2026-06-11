@@ -31,8 +31,10 @@ RSpec.describe 'Authentication API', type: :request do
 
         let(:user) do
           {
-            email: 'swagger@test.com',
-            password: 'password123'
+            user: {
+              email: 'swagger@test.com',
+              password: 'password123'
+            }
           }
         end
 
@@ -66,13 +68,15 @@ RSpec.describe 'Authentication API', type: :request do
 
   let(:credentials) do
     {
-      email: user.email,
-      password: 'password123'
+      credentials: {
+        email: user.email,
+        password: 'password123'
+      }
     }
   end
 
-  run_test!
-end
+        run_test!
+      end
+    end
   end
-end
 end
