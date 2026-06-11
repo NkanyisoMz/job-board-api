@@ -73,7 +73,175 @@ RSpec request specs covering:
 - Job creation
 - Authorization rules
 - Ownership-based access control
+- Job update
 - Job deletion
+
+### Continuous Integration
+
+GitHub Actions automatically:
+
+- Installs dependencies
+- Sets up PostgreSQL
+- Runs database migrations
+- Executes the RSpec test suite
+
+This ensures code quality and prevents regressions before changes are merged.
+
+---
+
+## Screenshots
+
+### Swagger API Documentation
+
+The API is fully documented using Swagger/OpenAPI through Rswag.
+
+Before authorized
+
+![Swagger Overview](docs/screenshots/swagger-overview.png)
+
+After authorized
+
+![Swagger Overview](docs/screenshots/swagger-overview-authorised.png)
+
+---
+
+### User Registration
+
+Register a new user and receive a JWT token.
+
+Request
+
+![User Registration](docs/screenshots/Register-User-request.png)
+
+Response
+
+![User Registration](docs/screenshots/Register-User-response.png)
+
+---
+
+### User Login
+
+Authenticate with existing credentials and receive a JWT token.
+
+Request
+
+![User Login](docs/screenshots/Login-User-request.png)
+
+Response
+
+![User Login](docs/screenshots/login-User-response.png)
+
+---
+
+### JWT Authorization
+
+Authorize requests by providing a Bearer token through Swagger UI.
+
+![JWT Authorization](docs/screenshots/Authorised-swagger-overview.png)
+
+---
+
+### Create Job Listing
+
+Authenticated users can create new job listings.
+
+request
+
+![Create Job](docs/screenshots/Create-job-request.png)
+
+response
+
+![Create Job](docs/screenshots/Create-job-response.png)
+![Create Job](docs/screenshots/Create-job-response2.png)
+
+---
+
+### Search and Filter Jobs
+
+Search jobs by keyword and filter by location, employment type, or experience level.
+
+request
+
+![Search Jobs](docs/screenshots/Search-jobs-by-keyword-request.png)
+
+response
+
+![Search Jobs](docs/screenshots/Search-jobs-by-keyword-response.png)
+
+---
+
+### View Single Job
+
+Retrieve detailed information about a specific job listing.
+
+request
+
+![View Job](docs/screenshots/Show-job-by-id-request.png)
+
+response
+
+![View Job](docs/screenshots/Show-job-by-id-response.png)
+
+---
+
+### Update Job Listing
+
+Job owners can update their existing listings (Note salary change).
+
+request
+
+![Update Job](docs/screenshots/Update-job-request.png)
+
+response
+
+![Update Job](docs/screenshots/Update-job-response.png)
+![Update Job](docs/screenshots/Update-job-response2.png)
+
+---
+
+### Delete Job Listing
+
+Job owners can delete their listings.
+
+request
+
+![Delete Job](docs/screenshots/Delete-job-request.png)
+
+response
+
+![Delete Job](docs/screenshots/Delete-job-response.png)
+
+---
+
+### Get Deleted Job Listing
+
+Job owners shouldn't find deleted jobs on their listings.
+
+request
+
+![Search Job](docs/screenshots/Get-job-after-delete-request.png)
+
+response
+
+![Search Job](docs/screenshots/Get-job-after-delete-response.png)
+
+---
+
+
+### Automated Test Suite
+
+RSpec request specs validating authentication, authorization, and job management functionality.
+
+![RSpec Tests](docs/screenshots/rspec-tests.png)
+
+---
+
+### GitHub Actions CI Pipeline
+
+Automated CI pipeline running tests and validation on every push.
+
+![GitHub Actions](docs/screenshots/Github-Actions.png)
+
 
 ---
 
